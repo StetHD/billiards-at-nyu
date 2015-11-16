@@ -24,15 +24,37 @@ Sample Documents
 ----------------------
 
 ```javascript
+// Schema to hold user logins and profiles
+// Currently just used for authentication and identification purposes
+// May be used in the future to also store extra profile information
+// which can be displayed in profile pages
+User: {"username":String,
+       // password provided by plugin
+       // Possibly more profile details to be implemented?
+       "playerid":Number} // Relational reference to players database
+
+// Schema to hold player information
+// Name
+// Rank, calculated and recorded rank
+// Tournaments taken part in, recorded tournament history
 Player: {"playerid":Number,
 	 "playerName":String,
 	 "playerRank":Number,
 	 "partTourneys":[String]} // Relational reference to tournaments
-					database
+					//database
 
+// Schema to hold past (and current?) tournament details
+// Can use relational references to this to figure out where someone
+// placed in a tournament, may need this to calculate player stats in the
+// future
+// Also for past tournament viewing
 Tournament: { // Still need to figure this out :/
 	     }
 
+// Schema to hold news and announcements posts
+// Records title, content, slug for reference
+// May need to also implement a way for administrators to input into
+// this database in a user friendly way
 Post: {"postid":Number,
        "title":String,
        "content":String,
