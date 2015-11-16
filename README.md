@@ -23,13 +23,14 @@ players and guests in a central area.
 Sample Documents
 ----------------------
 
+```javascript
 Player: {"playerid":Number,
 	 "playerName":String,
 	 "playerRank":Number,
 	 "partTourneys":[String]} // Relational reference to tournaments
 					database
 
-Tournament: { Still need to figure this out :/
+Tournament: { // Still need to figure this out :/
 	     }
 
 Post: {"postid":Number,
@@ -70,3 +71,10 @@ Site Map
 ---------------------------
 
 ![Site Map V1](/documentation/BilliardsNYUSiteMap1.png?raw=true)
+
+
+Wireframes
+--------------------------
+
+![Wireframes 1](/documentation/Wireframes1.png?raw=true)
+![Wireframes 2](/documentation/Wireframes2.png?raw=true)
