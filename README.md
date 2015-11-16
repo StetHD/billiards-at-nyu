@@ -37,6 +37,7 @@ Post: {"postid":Number,
        "title":String,
        "content":String,
        "slug":String}
+```
 
 Modules/Concepts to Research
 -------------------------------------
