@@ -64,7 +64,7 @@ Post: {"postid":Number,
 Modules/Concepts to Research
 -------------------------------------
 
-- User Authentication
+- User Authentication (3 Points)
 
 User Authentication, referring to the ability for users to create a profile
 and log in and use that profile as an identity. The most important part of
@@ -73,11 +73,13 @@ also needs to be worked out properly.
 
 Possible modules: Passport?
 
-- Embedded Media Serving
+- CSS Preprocessor
 
-Possible serving videos, flash animations, more interactive content; likely
-can be done in the same way as images, but embedding may require a little
-more thinking - security of the media is an issue?
+A CSS preprocessor allows me to write in more concise and interactive CSS
+code, converting it into proper CSS after finishing and before serving to
+the client. This will make for a more organized and easier to manage stylesheet,
+which should simplify building the CSS framework for the site. I will likely
+be using Sass for this, as it has a pretty simple and well documented API.
 
 - In page server-client communication
 

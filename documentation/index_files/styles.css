@@ -1,0 +1,15 @@
+td.cardDown{
+  background-color: grey;
+}
+
+div.cardDown {
+  visibility: hidden;
+}
+
+div.cardUp {
+  visibility: visible;
+}
+
+div.card {
+  font-size: 700%;
+}
