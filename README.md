@@ -28,12 +28,12 @@ Sample Documents
 // Currently just used for authentication and identification purposes
 // May be used in the future to also store extra profile information
 // which can be displayed in profile pages
-User: {"username":String,
-       "passHash":String, // password provided by plugin
+User: {"username":String, // username provided by plugin
+       "password":String, // password provided by plugin
        // Possibly more profile details to be implemented?
        "admin":Boolean,
        "email":String,
-       "player":Player} // Reference to players database
+       "playerid":String} // Relational reference to players database
 
 // Schema to hold player information
 // Name
@@ -41,7 +41,7 @@ User: {"username":String,
 // Tournaments taken part in, recorded tournament history
 Player: {"playerName":String,
 	 "playerRank":Number,
-	 "partTourneys":[Tournament]} // Relational reference to tournaments
+	 "partTourneys":[String]} // Relational reference to tournaments
 					//database
 
 // Schema to hold past (and current?) tournament details
@@ -62,6 +62,9 @@ Post: {"postid":Number,
        "slug":String}
 ```
 
+(CURRENTLY LOOKING TO REPLACE MONGODB WITH RELATIONAL DATABASE - looking at
+neo4j)
+
 Modules/Concepts to Research
 -------------------------------------
 
@@ -81,6 +84,17 @@ code, converting it into proper CSS after finishing and before serving to
 the client. This will make for a more organized and easier to manage stylesheet,
 which should simplify building the CSS framework for the site. I will likely
 be using Sass for this, as it has a pretty simple and well documented API.
+
+- Relational Database - neo4j (3 points)
+
+Mongodb stores records as 'documents' in collections, which are not inherently
+connected to each other throughout connections; it is possible to store ids to
+a document in another connection to establish a sort of relational link, or to
+store documents of another collection inside of a document, but storing ids is
+not directly supported by mongo and storing documents does not allow for
+circular references. Therefore, I will be looking to work with a database
+built around relations, neo4j, using the cypher query language and the Node-
+Neo4j module.
 
 - In page server-client communication (tbd with research)
 
