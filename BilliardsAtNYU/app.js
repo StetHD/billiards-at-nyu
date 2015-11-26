@@ -5,6 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Non-default requires
+var http = require('http');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var User = require('./db.js');
+var session = app.require('express-session');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -21,6 +29,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Non-default middleware
+var sessionOptions = {
+  secret: "NATSUME RIN",
+  resave: true,
+  saveUninitialized: true
+};
+app.use(session(sessionOptions));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport config
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use('/', routes);
 app.use('/users', users);

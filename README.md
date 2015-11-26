@@ -29,18 +29,19 @@ Sample Documents
 // May be used in the future to also store extra profile information
 // which can be displayed in profile pages
 User: {"username":String,
-       // password provided by plugin
+       "passHash":String, // password provided by plugin
        // Possibly more profile details to be implemented?
-       "playerid":Number} // Relational reference to players database
+       "admin":Boolean,
+       "email":String,
+       "player":Player} // Reference to players database
 
 // Schema to hold player information
 // Name
 // Rank, calculated and recorded rank
 // Tournaments taken part in, recorded tournament history
-Player: {"playerid":Number,
-	 "playerName":String,
+Player: {"playerName":String,
 	 "playerRank":Number,
-	 "partTourneys":[String]} // Relational reference to tournaments
+	 "partTourneys":[Tournament]} // Relational reference to tournaments
 					//database
 
 // Schema to hold past (and current?) tournament details
@@ -73,7 +74,7 @@ also needs to be worked out properly.
 
 Possible modules: Passport?
 
-- CSS Preprocessor
+- CSS Preprocessor (1 Point)
 
 A CSS preprocessor allows me to write in more concise and interactive CSS
 code, converting it into proper CSS after finishing and before serving to
@@ -81,7 +82,7 @@ the client. This will make for a more organized and easier to manage stylesheet,
 which should simplify building the CSS framework for the site. I will likely
 be using Sass for this, as it has a pretty simple and well documented API.
 
-- In page server-client communication
+- In page server-client communication (tbd with research)
 
 Trying to communicate between server and client without requiring the usage
 of GET and POST methods, i.e. interactive communication with server fully
@@ -91,6 +92,23 @@ open, how resource intensive that would be on the server/clients, the thread-
 safety of such techniques. This would provide for a much more immersive
 experience for users, and allow for intuitive interaction with mainly the
 tournament management features aimed at tourney players.
+
+Authorization
+---------------------------
+
+Three user groups required :
+
+- Guests
+- Players
+- Administrators
+
+Guests can access:
+
+- Home
+- About
+- Tournament
+- Login
+- Register
 
 Site Map
 ---------------------------
