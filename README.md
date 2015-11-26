@@ -92,9 +92,8 @@ connected to each other throughout connections; it is possible to store ids to
 a document in another connection to establish a sort of relational link, or to
 store documents of another collection inside of a document, but storing ids is
 not directly supported by mongo and storing documents does not allow for
-circular references. Therefore, I will be looking to work with a database
-built around relations, neo4j, using the cypher query language and the Node-
-Neo4j module.
+circular references. Therefore, I will be looking to work with a graph
+database, neo4j, using the cypher query language and the Node-Neo4j module.
 
 - In page server-client communication (tbd with research)
 
