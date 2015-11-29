@@ -7,11 +7,10 @@ var bodyParser = require('body-parser');
 
 // Non-default requires
 var http = require('http');
-var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var User = require('./db.js');
-var session = app.require('express-session');
+var db = require('./db.js'); //dbs file
+var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -40,10 +39,11 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
+// neo4j config
+
+
 // Passport config
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+
 
 app.use('/', routes);
 app.use('/users', users);

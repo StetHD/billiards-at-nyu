@@ -62,8 +62,58 @@ Post: {"postid":Number,
        "slug":String}
 ```
 
-(CURRENTLY LOOKING TO REPLACE MONGODB WITH RELATIONAL DATABASE - looking at
-neo4j)
+```javascript
+// Node schemas to softly implement
+// Node structure
+// (n:MainLabel[:OptionalLabels] {
+//	property1: Type,
+//	property2: Type
+// }
+
+(n:User[:Admin] {
+	username: String,
+	password: String,
+	email: String,
+})
+
+(n:Player {
+	playername: String,
+	playerrank: Number
+})
+
+(n:Match {
+	raceto: Number,
+	player1score: Number,
+	player2score: Number
+})
+
+(n:Tournament {
+	semester: String
+})
+
+(n:Post {
+	postid: Number,
+	title: String,
+	content: String,
+	slug: String
+})
+
+// Relationship schemas to softly implement
+// Relationship structure
+//(n:MainLabel)<-[r:RELATIONSHIP_TYPE { property1: Type, property2: Type }]->
+//(n2:MainLabel)
+
+(n:User)-[r:PLAYS_AS]->(n2:Player)
+
+(n:Player)-[r:PLAYED_IN { playernumber: Number }]->(n2:Match)
+
+(n:Match)-[r:PART_OF { roundof: Number, matchnumber: Number }]->
+(n2:Tournament)
+
+(n:Player)-[r:WON]->(n2:Tournament)
+
+(n:Post)-[r:ABOUT]->(n2[:Player:Match:Tournament])
+```
 
 Modules/Concepts to Research
 -------------------------------------
@@ -85,7 +135,7 @@ the client. This will make for a more organized and easier to manage stylesheet,
 which should simplify building the CSS framework for the site. I will likely
 be using Sass for this, as it has a pretty simple and well documented API.
 
-- Relational Database - neo4j (3 points)
+- Relational Database - neo4j (3 points - possibly 4 for complexity?)
 
 Mongodb stores records as 'documents' in collections, which are not inherently
 connected to each other throughout connections; it is possible to store ids to
