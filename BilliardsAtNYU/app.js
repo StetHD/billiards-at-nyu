@@ -10,6 +10,7 @@ var http = require('http');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var db = require('./db.js'); //dbs file
+var session = require('express-session');
 var crypto = require('crypto');
 
 var routes = require('./routes/index');
@@ -30,7 +31,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Non-default middleware
-app.use(express.session({ secret: "NATSUME RIN"}));
+var sessionOptions = {
+  secret: "NATSUME RIN",
+  resave: true,
+  saveUninitialized: true
+};
+app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -66,18 +72,20 @@ passport.use(new LocalStrategy(
 ));
 passport.serializeUser(function(user, done) {
   console.log("serializing user");
-  done(null,  user.username);
+  done(null,  user.properties.username);
 });
 passport.deserializeUser(function(id, done) {
   console.log("deserializing user");
+  console.log("ID IS " + id);
+  console.log(typeof id);
   db.cypher({
-    query: "MATCH (n:User {username:Username}) RETURN n",
+    query: "MATCH (n:User {username:{Username}}) RETURN n",
     params: {
       Username: id
     }
   }, function(err, results) {
-    var foundUser = results[0].user;
-    done(err, foundUser);
+    var foundUser = results[0].n;
+    done(err, foundUser.properties);
   });
 });
 

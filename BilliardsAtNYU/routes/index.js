@@ -29,17 +29,9 @@ router.get('/login', function(req, res, next) {
   res.render('login');
 });
 
-router.post('/login', function (req, res, next) {
-  // Authenticate
-  passport.authenticate('local', function(err, user, info) {
-    if (!user) {
-      // Login unsuccessful
-      return res.render('/login', { message: "Incorrect username/password" });
-    }
-    // Login successful
-    res.redirect('/testing');
-  })(req, res, next);
-});
+router.post('/login',
+            passport.authenticate('local', { successRedirect: '/testing',
+                                             failureRedirect: '/login'}));
 
 router.get('/register', function(req, res, next) {
   res.render('register');
@@ -86,9 +78,10 @@ router.get('/logout', function(req, res, next) {
 
 router.get('/testing', function(req, res, next) {
   if (req.user) {
-    res.send(req.user.toString());
+    res.send(req.user);
+  } else {
+    res.send("Not logged in");
   }
-  res.send("Not logged in");
 })
 
 function register(password) {
