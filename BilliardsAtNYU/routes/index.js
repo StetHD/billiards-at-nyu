@@ -30,13 +30,13 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/login', function (req, res, next) {
-  console.log("authentication started");
+  // Authenticate
   passport.authenticate('local', function(err, user, info) {
-    console.log("authentication ended");
     if (!user) {
-      return res.redirect('/login');
+      // Login unsuccessful
+      return res.render('/login', { message: "Incorrect username/password" });
     }
-    console.log(user);
+    // Login successful
     res.redirect('/testing');
   })(req, res, next);
 });
@@ -46,22 +46,38 @@ router.get('/register', function(req, res, next) {
 });
 
 router.post('/register', function(req, res, next) {
-  // register logic
-  var salt = (new Date).getTime() + 5894371985;
-  console.log(req.body.password);
-  crypto.pbkdf2(req.body.password, salt.toString(), 4096, 64, function(err, derivedKey) {
-    console.log(derivedKey.toString('ascii'));
-    db.cypher({
-      query: "CREATE (n:User { username: {Username}, password: {Password}, salt: {Salt}})",
-      params: {
-        Username: req.body.username,
-        Password: derivedKey.toString('ascii'),
-        Salt: salt
-      }
-    });
+  
+  // check to see if user is already registered
+  db.cypher({
+    query: "MATCH (n:User { username: {Username} }) RETURN n",
+    params: {
+      Username: req.body.username,
+    },
+  }, function(err, results) {
+    
+    if (!results[0]) {
+      var salt = (new Date).getTime() + 5894371985;
+      
+      // hash and salt
+      var derivedKey = crypto.pbkdf2Sync(req.body.password, salt.toString(), 4096, 64);
+      
+      console.log(derivedKey.toString('ascii'));
+      
+      db.cypher({
+        query: "CREATE (n:User { username: {Username}, password: {Password}, salt: {Salt}})",
+        params: {
+          Username: req.body.username,
+          Password: derivedKey.toString('ascii'),
+          Salt: salt
+        }
+      }, function(err, results) {
+        res.redirect('/testing');
+      });
+    } else {
+      res.send("username has already been registered"); // replace with user already registered logic
+    }
   });
-  res.redirect('/testing');
-})
+});
 
 router.get('/logout', function(req, res, next) {
   // logic to manage logout
@@ -69,7 +85,10 @@ router.get('/logout', function(req, res, next) {
 });
 
 router.get('/testing', function(req, res, next) {
-  res.send("HELLO WORLD");
+  if (req.user) {
+    res.send(req.user.toString());
+  }
+  res.send("Not logged in");
 })
 
 function register(password) {
