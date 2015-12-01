@@ -72,7 +72,7 @@ router.post('/register', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next) {
-  // logic to manage logout
+  req.logout();
   res.render('logout');
 });
 
