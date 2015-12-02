@@ -1,2 +1,92 @@
-$background-clr: #03180B;
-$foreground-clr: 
+$background-clr: #000000;
+$midground-clr: #252525;
+$midground-hvr: #353535;
+$foreground-clr: #E70000;
+$text-clr: #CACCBE;
+
+body {
+    background-image: url('/images/background.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    color: $text-clr;
+    font: 11pt Verdana, Arial, Helvetica, sans-serif;
+}
+
+div.main {
+    background: rgba($background-clr, 1);
+    width: 900px;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 30px;
+}
+
+div.banner {
+    display: inline-block;
+    width: 900px;
+    height: 200px;
+    background-image: url('/images/banner.png');
+}
+
+div.menubarcontainer {
+    margin-top: 30px;
+    width: 900px;
+    height: 40px;
+    border-radius: 5px;
+    background: $midground-clr;
+}
+
+div.menubutton {
+    display: table;
+    height: 40px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 0px;
+    margin: 0px;
+}
+
+div.menubuttoncontainer a {
+    color: $text-clr;
+}
+
+div.menubuttoncontainer a:visited {
+    color: $text-clr;
+}
+
+div.menubutton span {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+div.menubutton:hover {
+    background: $midground-hvr;
+}
+
+div.menuleft {
+    @extend div.menubutton;
+    float: left;
+}
+
+div.menuleftmost {
+    @extend div.menuleft;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+div.menuright {
+    @extend div.menubutton;
+    padding-left: 20px;
+    padding-right: 20px;
+    float: right;
+}
+
+div.menurightmost {
+    @extend div.menuright;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+img.logo {
+    height: 200px;
+    margin-left: 50px;
+}

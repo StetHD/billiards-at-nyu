@@ -6,19 +6,19 @@ var passport = require('passport');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  renderWithUser(req, res, 'index', { title: 'Express' });
 });
 
 router.get('/about', function(req, res, next) {
-  res.render('about');
+  renderWithUser(req, res, 'about');
 });
 
 router.get('/tournament', function(req, res, next) {
-  res.render('tournament');
+  renderWithUser(req, res, 'tournament');
 });
 
 router.get('/contact', function(req, res, next) {
-  res.render('contact');
+  renderWithUser(req, res, 'contact');
 });
 
 router.post('/contact', function(req, res, next) {
@@ -26,7 +26,7 @@ router.post('/contact', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-  res.render('login');
+  renderWithUser(req, res, 'login');
 });
 
 router.post('/login',
@@ -34,7 +34,7 @@ router.post('/login',
                                              failureRedirect: '/login'}));
 
 router.get('/register', function(req, res, next) {
-  res.render('register');
+  renderWithUser(req, res, 'register');
 });
 
 router.post('/register', function(req, res, next) {
@@ -73,7 +73,7 @@ router.post('/register', function(req, res, next) {
 
 router.get('/logout', function(req, res, next) {
   req.logout();
-  res.render('logout');
+  renderWithUser(req, res, 'logout');
 });
 
 router.get('/testing', function(req, res, next) {
@@ -84,12 +84,13 @@ router.get('/testing', function(req, res, next) {
   }
 })
 
-function register(password) {
-  //code
-}
-
-function saltAndHash(user, password) {
-  //code
+function renderWithUser(req, res, route, data) {
+  console.log(req.user)
+  if (req.user) {
+    data.user = req.user.properties;
+  }
+  console.log(data);
+  res.render(route, data);
 }
 
 module.exports = router;

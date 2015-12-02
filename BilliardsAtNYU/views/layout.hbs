@@ -3,9 +3,28 @@
   <head>
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <div><img src='/images/logo-transparent.png'></div>
   </head>
   <body>
-    {{{body}}}
+    <div class='main'>
+      <div class='banner'>
+        <a href='/'><img src='/images/logo-transparent.png' class='logo'></a>
+      </div>
+      <div class='menubarcontainer'>
+        <a href='/'><div class='menuleftmost'><span>Home</span></div></a>
+        <a href='/about'><div class='menuleft'><span>About</span></div></a>
+        <a href='/tournament'><div class='menuleft'><span>Tournament</span></div></a>
+        <a href='/players'><div class='menuleft'><span>Players</span></div></a>
+        <!--add user and login divs here-->
+        {{#if user}}
+          {{#with user}}
+          <a href='/logout'><div class='menurightmost'><span>Logout</span></div></a>
+          <a href='/users'><div class='menuright'><span>{{username}}</span></div></a>
+          {{/with}}
+        {{else}}
+          <a href='/login'><div class='menurightmost'><span>Login</span></div></a>
+        {{/if}}
+      </div>
+      {{{body}}}
+    </div>
   </body>
 </html>

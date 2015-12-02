@@ -84,8 +84,8 @@ passport.deserializeUser(function(id, done) {
       Username: id
     }
   }, function(err, results) {
-    var foundUser = results[0].n;
-    done(err, foundUser.properties);
+    //var foundUser = results[0].n;
+    done(err, results[0].n);
   });
 });
 
