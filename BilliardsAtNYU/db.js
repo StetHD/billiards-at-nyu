@@ -23,6 +23,8 @@ module.exports = ModelUser;*/
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase('http://neo4j:admin@localhost:10561');
 
+console.log(db);
+
 /* DB EXAMPLE
 db.cypher({
     query: 'MATCH (user:User {email: {email}}) RETURN user',
