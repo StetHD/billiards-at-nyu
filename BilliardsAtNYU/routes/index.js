@@ -39,6 +39,9 @@ router.get('/', function(req, res, next) {
     });
   });
 });
+router.get('/home', function (req, res, next) {
+  res.redirect('/');
+});
 
 router.get('/newpost', function(req, res, next) {
   if (!req.user) {
