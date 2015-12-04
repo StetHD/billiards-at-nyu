@@ -121,7 +121,11 @@ router.post('/login',
                                              failureRedirect: '/login'}));
 
 router.get('/register', function(req, res, next) {
-  renderWithUser(req, res, 'register');
+  if (req.user) {
+    res.redirect('/users');
+  } else {
+    renderWithUser(req, res, 'register');
+  }
 });
 
 router.post('/register', function(req, res, next) {
