@@ -92,8 +92,9 @@ Post: {"postid":Number,
 })
 
 (n:Post {
-	postid: Number,
+	postnumber: Number,
 	title: String,
+        date: Number,
 	content: String,
 	slug: String
 })
