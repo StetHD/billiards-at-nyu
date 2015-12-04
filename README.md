@@ -94,7 +94,7 @@ Post: {"postid":Number,
 (n:Post {
 	postnumber: Number,
 	title: String,
-        date: Number,
+	date: Number,
 	content: String,
 	slug: String
 })
