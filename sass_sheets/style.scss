@@ -3,6 +3,7 @@ $midground-clr: #252525;
 $midground-hvr: #353535;
 $foreground-clr: #E70000;
 $text-clr: #CACCBE;
+$inner-content-padding: 30px;
 
 body {
     background-image: url('/images/background.png');
@@ -13,12 +14,23 @@ body {
     font: 11pt Verdana, Arial, Helvetica, sans-serif;
 }
 
+div.centereddiv {
+    margin:0 auto;
+}
+
+div.roundeddiv {
+    border-radius: 5px;
+    padding: $inner-content-padding;
+}
+
 div.main {
+    @extend div.centereddiv;
     background: rgba($background-clr, 1);
     width: 900px;
-    margin: 0 auto;
     margin-top: 20px;
     padding: 30px;
+    min-height: 100vh;
+    overflow: auto;
 }
 
 div.banner {
@@ -30,6 +42,7 @@ div.banner {
 
 div.menubarcontainer {
     margin-top: 30px;
+    margin-bottom: 30px;
     width: 900px;
     height: 40px;
     border-radius: 5px;
@@ -45,17 +58,10 @@ div.menubutton {
     margin: 0px;
 }
 
-div.menubuttoncontainer a {
-    color: $text-clr;
-}
-
-div.menubuttoncontainer a:visited {
-    color: $text-clr;
-}
-
 div.menubutton span {
     display: table-cell;
     vertical-align: middle;
+    color: $text-clr;
 }
 
 div.menubutton:hover {
@@ -84,6 +90,29 @@ div.menurightmost {
     @extend div.menuright;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+div.loginbox {
+    @extend div.centereddiv;
+    background: $midground-clr;
+    border-radius: 10px;
+    width: 400px;
+    padding: 50px;
+    text-align: center;
+}
+
+div.homemain {
+    @extend div.roundeddiv;
+    background: $midground-clr;
+    float: left;
+    width: 585px - $inner-content-padding*2;
+}
+
+div.homeside {
+    @extend div.roundeddiv;
+    background: $midground-clr;
+    float: right;
+    width: 285px - $inner-content-padding*2;
 }
 
 img.logo {

@@ -41,7 +41,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // neo4j config
-
+// Check postcount node is initialized
+db.cypher({
+  query: "MATCH (n:PostCount) RETURN n"
+}, function(err, results) {
+  if (!results[0]) {
+    db.cypher({
+      query: "CREATE (n:PostCount {count: 0})"
+    }, function(err, results) {
+      console.log("PostCount node created");
+    });
+  }
+});
 
 // Passport config
 passport.use(new LocalStrategy(

@@ -6,12 +6,20 @@ body {
   color: #CACCBE;
   font: 11pt Verdana, Arial, Helvetica, sans-serif; }
 
+div.centereddiv, div.main, div.loginbox {
+  margin: 0 auto; }
+
+div.roundeddiv, div.homemain, div.homeside {
+  border-radius: 5px;
+  padding: 30px; }
+
 div.main {
   background: black;
   width: 900px;
-  margin: 0 auto;
   margin-top: 20px;
-  padding: 30px; }
+  padding: 30px;
+  min-height: 100vh;
+  overflow: auto; }
 
 div.banner {
   display: inline-block;
@@ -21,6 +29,7 @@ div.banner {
 
 div.menubarcontainer {
   margin-top: 30px;
+  margin-bottom: 30px;
   width: 900px;
   height: 40px;
   border-radius: 5px;
@@ -34,15 +43,10 @@ div.menubutton, div.menuleft, div.menuleftmost, div.menuright, div.menurightmost
   border: 0px;
   margin: 0px; }
 
-div.menubuttoncontainer a {
-  color: #CACCBE; }
-
-div.menubuttoncontainer a:visited {
-  color: #CACCBE; }
-
 div.menubutton span, div.menuleft span, div.menuleftmost span, div.menuright span, div.menurightmost span {
   display: table-cell;
-  vertical-align: middle; }
+  vertical-align: middle;
+  color: #CACCBE; }
 
 div.menubutton:hover, div.menuleft:hover, div.menuleftmost:hover, div.menuright:hover, div.menurightmost:hover {
   background: #353535; }
@@ -62,6 +66,23 @@ div.menuright, div.menurightmost {
 div.menurightmost {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px; }
+
+div.loginbox {
+  background: #252525;
+  border-radius: 10px;
+  width: 400px;
+  padding: 50px;
+  text-align: center; }
+
+div.homemain {
+  background: #252525;
+  float: left;
+  width: 525px; }
+
+div.homeside {
+  background: #252525;
+  float: right;
+  width: 225px; }
 
 img.logo {
   height: 200px;

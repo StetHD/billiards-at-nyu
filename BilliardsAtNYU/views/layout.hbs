@@ -16,12 +16,13 @@
         <a href='/players'><div class='menuleft'><span>Players</span></div></a>
         <!--add user and login divs here-->
         {{#if user}}
-          {{#with user}}
+          {{#with user}}{{#with properties}}
           <a href='/logout'><div class='menurightmost'><span>Logout</span></div></a>
           <a href='/users'><div class='menuright'><span>{{username}}</span></div></a>
-          {{/with}}
+          {{/with}}{{/with}}
         {{else}}
           <a href='/login'><div class='menurightmost'><span>Login</span></div></a>
+          <a href='/register'><div class='menuright'><span>Register</span></div></a>
         {{/if}}
       </div>
       {{{body}}}

@@ -1,2 +1,23 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<div class='homemain'>
+
+{{#if admin}}
+  <form action='/newpost' method='GET'>
+    <input type='submit' value='New Post'>
+  </form>
+{{/if}}
+
+{{#each posts}}
+  <div class='post'>
+    <h2 class='posttitle'>
+    {{title}}
+    </h2>
+    <p class='postcontent'>
+    {{content}}
+    </p>
+  </div>
+{{/each}}
+
+</div>
+<div class='homeside'>
+
+</div>

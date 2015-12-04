@@ -6,8 +6,95 @@ var passport = require('passport');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  renderWithUser(req, res, 'index', { title: 'Express' });
+  
+  // get most recent posts from database
+  db.cypher({
+    query: "MATCH (n:PostCount) RETURN n"
+  }, function(err, results) {
+    
+    postCount = results[0].n.properties.count || 0;
+    
+    db.cypher({
+      query: "MATCH (n:Post) WHERE n.postnumber IN { nums } RETURN n",
+      params: {
+        nums: [postCount, postCount-1, postCount-2]
+      }
+    }, function(err, results) {
+      console.log(results);
+      var data = {posts: []};
+      
+      for (i = postCount; i >= postCount-2; i--) {
+        for (j = 0; j < 3; j++) {
+          if (results[j]) {  
+            if (results[j].n.properties.postnumber == i) {
+              data.posts[postCount-i] = results[j].n.properties;
+            }
+          }
+        }
+      }
+      
+      //console.log(data);
+      
+      renderWithUser(req, res, 'index', data);
+    });
+  });
 });
+
+router.get('/newpost', function(req, res, next) {
+  if (!req.user) {
+    res.send("401 Unauthorized");
+  } else if (req.user.labels.indexOf("Admin") != -1) {
+    renderWithUser(req, res, 'newpost');
+  } else {
+    res.send("401 Unauthorized");
+  }
+})
+
+router.post('/newpost', function(req, res, next) {
+  var transaction = db.beginTransaction();
+  
+  function makeFirstQuery() {
+    transaction.cypher({
+      query: "MATCH (n:PostCount) RETURN n"
+    }, makeSecondQuery);
+  }
+  
+  function makeSecondQuery(err, results) {
+    var count = results[0].n.properties.count || 0;
+    transaction.cypher({
+      query: "CREATE (n:Post {title: {Title}, content: {Content}, date: {Date}, postnumber: {PostNum}}) RETURN n",
+      params: {
+        Title: req.body.title,
+        Content: req.body.content,
+        Date: Date.now(),
+        PostNum: count + 1
+      }
+    }, makeThirdQuery);
+  }
+  
+  function makeThirdQuery(err, results) {
+    count = results[0].n.properties.postnumber;
+    transaction.cypher({
+      query: "MATCH (n:PostCount) SET n.count = {Count}",
+      params: {
+        Count: count
+      }
+    }, finish);
+  }
+  
+  function finish(err, results) {
+    if (err) throw err;
+    transaction.commit(done);
+  }
+  
+  function done(err) {
+    if (err) throw err;
+    console.log("new post transaction commited");
+    res.redirect('/');
+  }
+  
+  makeFirstQuery();
+})
 
 router.get('/about', function(req, res, next) {
   renderWithUser(req, res, 'about');
@@ -85,11 +172,17 @@ router.get('/testing', function(req, res, next) {
 })
 
 function renderWithUser(req, res, route, data) {
-  console.log(req.user)
-  if (req.user) {
-    data.user = req.user.properties;
+  if (!data) {
+    data = {};
   }
-  console.log(data);
+  console.log("User: " + req.user);
+  if (req.user) {
+    data.user = req.user;
+    if (data.user.labels.indexOf("Admin") != -1) {
+      data.admin = true;
+    }
+  }
+  //console.log(data);
   res.render(route, data);
 }
 
