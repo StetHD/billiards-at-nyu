@@ -23,6 +23,11 @@ div.roundeddiv {
     padding: $inner-content-padding;
 }
 
+div.contentdiv {
+    @extend div.centereddiv, div.roundeddiv;
+    background: $midground-clr;
+}
+
 div.main {
     @extend div.centereddiv;
     background: rgba($background-clr, 1);

@@ -3,6 +3,7 @@ var router = express.Router();
 var db = require('../db.js');
 var crypto = require('crypto');
 var passport = require('passport');
+var helper = require('./helper.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -35,7 +36,7 @@ router.get('/', function(req, res, next) {
       
       //console.log(data);
       
-      renderWithUser(req, res, 'index', data);
+      helper.renderWithUser(req, res, 'index', data);
     });
   });
 });
@@ -44,13 +45,13 @@ router.get('/home', function (req, res, next) {
 });
 
 router.get('/newpost', function(req, res, next) {
-  if (!req.user) {
-    res.send("401 Unauthorized");
-  } else if (req.user.labels.indexOf("Admin") != -1) {
-    renderWithUser(req, res, 'newpost');
-  } else {
-    res.send("401 Unauthorized");
+  if (req.user) {
+    if (req.user.isAdmin) {
+      helper.renderWithUser(req, res, 'newpost');
+      return;
+    }
   }
+  res.send("401 Unauthorized");
 })
 
 router.post('/newpost', function(req, res, next) {
@@ -65,12 +66,13 @@ router.post('/newpost', function(req, res, next) {
   function makeSecondQuery(err, results) {
     var count = results[0].n.properties.count || 0;
     transaction.cypher({
-      query: "CREATE (n:Post {title: {Title}, content: {Content}, date: {Date}, postnumber: {PostNum}}) RETURN n",
+      query: "CREATE (n:Post {title: {Title}, content: {Content}, date: {Date}, postnumber: {PostNum}, author: {Author}}) RETURN n",
       params: {
         Title: req.body.title,
         Content: req.body.content,
         Date: Date.now(),
-        PostNum: count + 1
+        PostNum: count + 1,
+        Author: req.user.properties.username
       }
     }, makeThirdQuery);
   }
@@ -96,19 +98,30 @@ router.post('/newpost', function(req, res, next) {
     res.redirect('/');
   }
   
-  makeFirstQuery();
+  
+  if (req.user) {
+    if (req.user.isAdmin) {
+      makeFirstQuery();
+      return;
+    }
+  }
+  res.send("401 Unauthorized");
 })
 
 router.get('/about', function(req, res, next) {
-  renderWithUser(req, res, 'about');
+  helper.renderWithUser(req, res, 'about');
 });
 
-router.get('/tournament', function(req, res, next) {
-  renderWithUser(req, res, 'tournament');
+router.get('/tournaments', function(req, res, next) {
+  helper.renderWithUser(req, res, 'tournaments');
+});
+
+router.get('/players', function(req, res, next) {
+  helper.renderWithUser(req, res, 'players');
 });
 
 router.get('/contact', function(req, res, next) {
-  renderWithUser(req, res, 'contact');
+  helper.renderWithUser(req, res, 'contact');
 });
 
 router.post('/contact', function(req, res, next) {
@@ -116,7 +129,7 @@ router.post('/contact', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-  renderWithUser(req, res, 'login');
+  helper.renderWithUser(req, res, 'login');
 });
 
 router.post('/login',
@@ -127,7 +140,7 @@ router.get('/register', function(req, res, next) {
   if (req.user) {
     res.redirect('/users');
   } else {
-    renderWithUser(req, res, 'register');
+    helper.renderWithUser(req, res, 'register');
   }
 });
 
@@ -167,7 +180,7 @@ router.post('/register', function(req, res, next) {
 
 router.get('/logout', function(req, res, next) {
   req.logout();
-  renderWithUser(req, res, 'logout');
+  helper.renderWithUser(req, res, 'logout');
 });
 
 router.get('/testing', function(req, res, next) {
@@ -178,19 +191,52 @@ router.get('/testing', function(req, res, next) {
   }
 })
 
-function renderWithUser(req, res, route, data) {
-  if (!data) {
-    data = {};
-  }
-  console.log("User: " + req.user);
+router.get('/dbquery', function(req, res, next) {
   if (req.user) {
-    data.user = req.user;
-    if (data.user.labels.indexOf("Admin") != -1) {
-      data.admin = true;
+    console.log(req.user);
+    if (req.user.isAdmin) {
+      helper.renderWithUser(req, res, 'dbquery');
+      return;
     }
   }
-  //console.log(data);
-  res.render(route, data);
-}
+  res.send("401 Unauthorized");
+});
+
+router.post('/dbquery', function(req, res, next) {
+  if (req.user) {
+    if (req.user.isAdmin) {
+      console.log(req.body.query);
+      console.log(JSON.parse(req.body.params || "{}"));
+      db.cypher({
+        query: req.body.query,
+        params: JSON.parse(req.body.params || "{}")
+      }, function (err, results) {
+        var message = "err: " + (err || " ").toString() + "\nresults: [\n";
+        for (i = 0; i < results.length; i++) {
+          message += JSON.stringify(results[i]) + ",\n";
+        }
+        message += "]"
+        res.send(message);
+      });
+      return;
+    }
+  }
+  res.send("401 Unauthorized");
+});
+
+router.get('/makeadmin', function(req, res, next) {
+  if (!req.user) {
+    res.send("not logged in");
+    return;
+  }
+  db.cypher({
+    query: "MATCH (n:User {username: {Username}}) SET n :Admin",
+    params: {
+      Username: req.user.properties.username
+    }
+  }, function(err, results) {
+    res.redirect('/');
+  })
+});
 
 module.exports = router;

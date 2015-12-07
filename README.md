@@ -84,7 +84,8 @@ Post: {"postid":Number,
 (n:Match {
 	raceto: Number,
 	player1score: Number,
-	player2score: Number
+	player2score: Number,
+        games: [Number] //1 for player1 win, 2 for player2 win
 })
 
 (n:Tournament {

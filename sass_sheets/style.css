@@ -6,12 +6,15 @@ body {
   color: #CACCBE;
   font: 11pt Verdana, Arial, Helvetica, sans-serif; }
 
-div.centereddiv, div.main, div.loginbox {
+div.centereddiv, div.contentdiv, div.main, div.loginbox {
   margin: 0 auto; }
 
-div.roundeddiv, div.homemain, div.homeside {
+div.roundeddiv, div.contentdiv, div.homemain, div.homeside {
   border-radius: 5px;
   padding: 30px; }
+
+div.contentdiv {
+  background: #252525; }
 
 div.main {
   background: black;

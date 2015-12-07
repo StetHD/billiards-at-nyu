@@ -66,11 +66,11 @@ passport.use(new LocalStrategy(
       if (err) {
         return done(err);
       }
-      var user = results[0].user;
-      if (!user) {
+      if (!results[0]) {
         console.log("bad username");
         return done(null,false, {message: "Incorrect Username/Password"});
       }
+      var user = results[0].user;
       if (!validatePassword(user, password)) {
         console.log("bad password");
         return done(null, false, {message: "Incorrect Username/Password"});
@@ -96,6 +96,9 @@ passport.deserializeUser(function(id, done) {
     }
   }, function(err, results) {
     //var foundUser = results[0].n;
+    if (results[0].n.labels.indexOf("Admin") != -1) {
+      results[0].n.isAdmin = true;
+    }
     done(err, results[0].n);
   });
 });
