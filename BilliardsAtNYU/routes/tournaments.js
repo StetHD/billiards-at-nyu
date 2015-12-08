@@ -3,7 +3,40 @@ var router = express.Router();
 var db = require('../db.js');
 var helper = require('./helper.js');
 
-router.get('/retrievetournament', function(req, res, next) {
+router.get('/', function(req, res, next) {
+  db.cypher({
+    query: "MATCH (n:Tournament) RETURN n"
+  }, function(err, results) {
+    
+    var tournaments = [];
+    
+    for (i = 0; i < results.length; i++) {
+      var index = tournaments.length;
+      if (index == 0) {
+        tournaments[0] = results[i].n.properties;
+        continue;
+      }
+      for (j = 0; j < tournaments.length; j++) {
+        if (helper.tourneyNumber(tournaments[j]) < helper.tourneyNumber(results[i].n.properties)) {
+          index = j;
+          break;
+        }
+      }
+      j = tournaments.length - 1;
+      while (j >= index) {
+        tournaments[j+1] = tournaments[j];
+        j--;
+      }
+      tournaments[index] = results[i].n.properties;
+    }
+    
+    console.log(tournaments);
+    
+    helper.renderWithUser(req, res, 'tournaments', {"tournaments": tournaments});
+  })
+});
+
+router.get('/retrieve', function(req, res, next) {
     
     console.log(req.query);
     
@@ -91,11 +124,6 @@ router.get('/retrievetournament', function(req, res, next) {
     
     makeFirstQuery();
 })
-
-
-
-
-
 
 
 module.exports = router;

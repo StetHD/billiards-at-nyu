@@ -1,7 +1,13 @@
 var active = false;
 
+var edit = false;
+
 window.onload = function() {
     active = true;
+    
+    if (window.location.href.indexOf("edit") > -1) {
+        edit = true;
+    }
     
     // change tournament to most recent tournament
     changeTournament();
@@ -15,7 +21,7 @@ function changeTournament() {
     //get new value
     var newTournament = document.getElementById("tournamentSelect").value;
     
-    $.getJSON("/ajax/retrievetournament?slug=" + newTournament, function (data) {
+    $.getJSON("/tournaments/retrieve?slug=" + newTournament, function (data) {
         
         // This should be the form of the tournament object coming in to be interepeted:
         /*
@@ -62,13 +68,23 @@ function changeTournament() {
         newTournament.id = oldTournament.id;
         newTournament.classList.add("tournamentcontainer");
         
+        var parentHolder = newTournament;
+        
+        // if this is the edit page, create the form and make it the parent
+        if (edit) {
+            parentHolder = document.createElement("form");
+            parentHolder.action="";
+            parentHolder.method="POST";
+            parentHolder.name="tournamentform";
+        }
+        
         winner = document.createElement("div");
         winner.classList.add("winnerdiv");
         winner.innerHTML = "<h2>Winner: " + updatedTournament.winner + "!</h2>";
         
-        newTournament.appendChild(winner);
-        newTournament.appendChild(document.createElement("br"));
-        newTournament.appendChild(document.createElement("br"));
+        parentHolder.appendChild(winner);
+        parentHolder.appendChild(document.createElement("br"));
+        parentHolder.appendChild(document.createElement("br"));
         
         // Create and add layer 1 of the tournament
         var layer1 = document.createElement("div");
@@ -76,14 +92,14 @@ function changeTournament() {
         finals = createMatchTable(updatedTournament.rounds[0].matches[0], false);
         layer1.appendChild(finals);
         
-        newTournament.appendChild(layer1);
+        parentHolder.appendChild(layer1);
         
         // Create and add layer 1.5 of the tournament
         var layer1_5 = document.createElement("div");
         
         layer1_5.appendChild(createCombiner("4x"));
         
-        newTournament.appendChild(layer1_5);
+        parentHolder.appendChild(layer1_5);
         
         // Create and add layer 2 of the tournament
         var layer2 = document.createElement("div");
@@ -96,7 +112,7 @@ function changeTournament() {
         
         addElements(layer2, elements);
         
-        newTournament.appendChild(layer2);
+        parentHolder.appendChild(layer2);
         
         // Create and add layer 2.5 of the tournament
         var layer2_5 = document.createElement("div");
@@ -109,7 +125,7 @@ function changeTournament() {
         
         addElements(layer2_5, elements);
         
-        newTournament.appendChild(layer2_5);
+        parentHolder.appendChild(layer2_5);
         
         // Create and add layer 3 of the tournament
         var layer3 = document.createElement("div");
@@ -126,7 +142,7 @@ function changeTournament() {
         
         addElements(layer3, elements);
         
-        newTournament.appendChild(layer3);
+        parentHolder.appendChild(layer3);
         
         // Create and add layer 3.5 of the tournament
         var layer3_5 = document.createElement("div");
@@ -143,7 +159,7 @@ function changeTournament() {
         
         addElements(layer3_5, elements);
         
-        newTournament.appendChild(layer3_5);
+        parentHolder.appendChild(layer3_5);
         
         // Create and add layer 4 of the tournament
         var layer4 = document.createElement("div");
@@ -161,7 +177,11 @@ function changeTournament() {
         
         addElements(layer4, elements);
         
-        newTournament.appendChild(layer4);
+        parentHolder.appendChild(layer4);
+        
+        if (parentHolder != newTournament) {
+            newTournament.appendChild(parentHolder);
+        }
         
         // Remove the old tournament, add in the new tournament
         parentDiv.removeChild(oldTournament);

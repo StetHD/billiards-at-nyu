@@ -15,7 +15,8 @@ var crypto = require('crypto');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var ajax = require('./routes/ajax');
+var posts = require('./routes/posts');
+var tournaments = require('./routes/tournaments');
 
 var app = express();
 
@@ -106,7 +107,8 @@ passport.deserializeUser(function(id, done) {
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/ajax', ajax);
+app.use('/posts', posts);
+app.use('/tournaments', tournaments);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
