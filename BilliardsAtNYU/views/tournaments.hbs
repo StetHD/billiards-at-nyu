@@ -1,3 +1,4 @@
+<script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js'></script>
 <script type='text/javascript' src='/javascripts/tournaments.js'></script>
 
 <div class='contentdiv'>
@@ -6,9 +7,12 @@
      records of all previous tournaments. Use the dropdown to switch inbetween
      seasons, and hover over matches to see the individual match records.</p><br>
   Tournament: <select id='tournamentSelect' onChange='changeTournament();'>
-    <option value='1'>placeholder1</option>
-    <option value='2'>placeholder2</option>
+    {{#each tournaments}}
+      {{#with this}}
+        <option value='{{slug}}'>{{name}}</option>
+      {{/with}}
+    {{/each}}
   </select>
-  <div id='tournamentcontainer'>
+  <div id='tournamentcontainer' class='tournamentcontainer'>
   </div>
 </div>

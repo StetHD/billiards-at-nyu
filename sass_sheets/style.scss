@@ -1,7 +1,7 @@
 $background-clr: #000000;
 $midground-clr: #252525;
-$midground-hvr: #353535;
-$foreground-clr: #E70000;
+$foreground-clr: #353535;
+$foregroundtop-clr: #3A3A3A;
 $text-clr: #CACCBE;
 $inner-content-padding: 30px;
 
@@ -70,7 +70,7 @@ div.menubutton span {
 }
 
 div.menubutton:hover {
-    background: $midground-hvr;
+    background: $foreground-clr;
 }
 
 div.menuleft {
@@ -124,3 +124,38 @@ img.logo {
     height: 200px;
     margin-left: 50px;
 }
+
+div.tournamentcontainer {
+    text-align: center;
+}
+
+div.winner {
+    display: inline-block;
+}
+
+table.matchtable {
+    display: inline-block;
+    border-radius: 5px;
+    width: 150px;
+    background: $foreground-clr;
+    border: 1px solid $foregroundtop-clr;
+}
+
+table.matchtable .playernamecell {
+    border-right: 2px solid $foregroundtop-clr;
+    text-align: left;
+    width: 120px;
+}
+
+table.matchtablesmall {
+    @extend table.matchtable;
+    width: 95px;
+    margin: 0px 2px;
+}
+
+table.matchtablesmall .playernamecell {
+    border-right: 2px solid $foregroundtop-clr;
+    text-align: left;
+    width: 65px;
+}
+

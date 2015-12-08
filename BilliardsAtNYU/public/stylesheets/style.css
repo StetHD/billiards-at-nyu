@@ -91,4 +91,31 @@ img.logo {
   height: 200px;
   margin-left: 50px; }
 
+div.tournamentcontainer {
+  text-align: center; }
+
+div.winner {
+  display: inline-block; }
+
+table.matchtable, table.matchtablesmall {
+  display: inline-block;
+  border-radius: 5px;
+  width: 150px;
+  background: #353535;
+  border: 1px solid #3A3A3A; }
+
+table.matchtable .playernamecell, table.matchtablesmall .playernamecell {
+  border-right: 2px solid #3A3A3A;
+  text-align: left;
+  width: 120px; }
+
+table.matchtablesmall {
+  width: 95px;
+  margin: 0px 2px; }
+
+table.matchtablesmall .playernamecell {
+  border-right: 2px solid #3A3A3A;
+  text-align: left;
+  width: 65px; }
+
 /*# sourceMappingURL=style.css.map */
