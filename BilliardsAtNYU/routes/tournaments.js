@@ -59,6 +59,11 @@ router.get('/retrieve', function(req, res, next) {
     };
     
     function makeSecondQuery(err, results) {
+        console.log(results);
+        if (!results[0]) {
+            res.json("{}");
+            return;
+        }
         tournament.winner = results[0].n.properties.playername;
         db.cypher({
             query: "MATCH (:Tournament {slug:{Slug}})<-[r1:PART_OF {roundof: {Roundof}}]-(n:Match)<-[r2:PLAYED_IN]-(m:Player) RETURN n,m,r1,r2",
@@ -123,7 +128,20 @@ router.get('/retrieve', function(req, res, next) {
     }
     
     makeFirstQuery();
-})
+});
+
+router.get('/edit', function(req, res, next) {
+    console.log(req.query);
+    
+    if (req.user) {
+        if (req.user.isAdmin) {
+            console.log("sending edittournaments");
+            helper.renderWithUser(req, res, 'edittournaments', {tournament: req.query.tournamentName});
+            return;
+        }
+    }
+    res.send("401 Unauthorized");
+});
 
 
 module.exports = router;

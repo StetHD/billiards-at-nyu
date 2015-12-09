@@ -1,0 +1,15 @@
+<script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js'></script>
+<script type='text/javascript' src='/javascripts/edittournaments.js'></script>
+
+<div class='contentdiv'>
+  <h1>Tournaments</h1>
+  <form action='' method='POST' id='tournamentContainer' class='tournamentcontainer'>
+  Tournament: <input type='text' id='tournamentSlug' value='{{tournament}}'><br><br>
+  <!--retrieved tournament goes here-->
+  <div id='bottom'>
+  <br><br>
+  <input type='hidden' id='hiddeninput' name='editingTournament' value='{{tournament}}'>
+  <input type='submit' value='Submit'><input type='button' onclick='history.back();' value='Cancel'>
+  </div>
+  </form>
+</div>

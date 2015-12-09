@@ -125,7 +125,7 @@ img.logo {
     margin-left: 50px;
 }
 
-div.tournamentcontainer {
+.tournamentcontainer {
     text-align: center;
 }
 
@@ -157,5 +157,13 @@ table.matchtablesmall .playernamecell {
     border-right: 2px solid $foregroundtop-clr;
     text-align: left;
     width: 65px;
+}
+
+table.matchtable input {
+    width: 20px;
+}
+
+table.matchtable td.playernamecell input {
+    width: 100%;
 }
 

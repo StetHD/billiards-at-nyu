@@ -6,6 +6,12 @@
   <p>Here, you will be able to view current tournament standings and see our
      records of all previous tournaments. Use the dropdown to switch inbetween
      seasons, and hover over matches to see the individual match records.</p><br>
+  {{#if admin}}
+    <form action='/tournaments/edit' method='GET'>
+      <input type='submit' value='New Tournament'>
+    </form>
+  {{/if}}
+  <br>
   Tournament: <select id='tournamentSelect' onChange='changeTournament();'>
     {{#each tournaments}}
       {{#with this}}
@@ -13,6 +19,15 @@
       {{/with}}
     {{/each}}
   </select>
-  <div id='tournamentcontainer' class='tournamentcontainer'>
+  <div>
+  <div id='tournamentContainer' class='tournamentcontainer'>
   </div>
+  </div>
+  {{#if admin}}
+  <br><br>
+    <form action='/tournaments/edit' method='GET'>
+      <input type='hidden' name='tournamentName' id='editTourney'>
+      <input type='submit' value='Edit this tournament'>
+    </form>
+  {{/if}}
 </div>

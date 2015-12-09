@@ -19,9 +19,7 @@ function changeTournament() {
     }
     
     //get new value
-    console.log(document.getElementById("tournamentSelect").value);
-    console.log(document.getElementById("tournamentSelect").innerHTML);
-    var newTournament = document.getElementById("tournamentSelect").value;
+    var newTournament = document.getElementById("tournamentSlug").value;
     
     var editHidden = document.getElementById("editTourney");
     if (editHidden) {
@@ -111,19 +109,20 @@ function renderTournament(data) {
     
     var updatedTournament = data;
     
-    var oldTournament = document.getElementById("tournamentContainer");
-    
-    var newTournament = document.createElement("div");
-    newTournament.id = oldTournament.id;
-    newTournament.classList.add("tournamentcontainer");
+    var tournament = document.getElementById("tournamentContainer");
     
     winner = document.createElement("div");
     winner.classList.add("winnerdiv");
-    winner.innerHTML = "<h2>Winner: " + updatedTournament.winner + "!</h2>";
+    winner.innerHTML = "Winner: ";
+    var winnerinput = document.createElement("input");
+    winnerinput.type = "text";
+    winnerinput.name = "winner";
+    winnerinput.value = updatedTournament.winner;
+    winner.appendChild(winnerinput);
     
-    newTournament.appendChild(winner);
-    newTournament.appendChild(document.createElement("br"));
-    newTournament.appendChild(document.createElement("br"));
+    tournament.appendChild(winner);
+    tournament.appendChild(document.createElement("br"));
+    tournament.appendChild(document.createElement("br"));
     
     // Create and add layer 1 of the tournament
     var layer1 = document.createElement("div");
@@ -131,14 +130,14 @@ function renderTournament(data) {
     finals = createMatchTable(updatedTournament.rounds[0].matches[0], false);
     layer1.appendChild(finals);
     
-    newTournament.appendChild(layer1);
+    tournament.appendChild(layer1);
     
     // Create and add layer 1.5 of the tournament
     var layer1_5 = document.createElement("div");
     
     layer1_5.appendChild(createCombiner("4x"));
     
-    newTournament.appendChild(layer1_5);
+    tournament.appendChild(layer1_5);
     
     // Create and add layer 2 of the tournament
     var layer2 = document.createElement("div");
@@ -151,7 +150,7 @@ function renderTournament(data) {
     
     addElements(layer2, elements);
     
-    newTournament.appendChild(layer2);
+    tournament.appendChild(layer2);
     
     // Create and add layer 2.5 of the tournament
     var layer2_5 = document.createElement("div");
@@ -164,7 +163,7 @@ function renderTournament(data) {
     
     addElements(layer2_5, elements);
     
-    newTournament.appendChild(layer2_5);
+    tournament.appendChild(layer2_5);
     
     // Create and add layer 3 of the tournament
     var layer3 = document.createElement("div");
@@ -181,7 +180,7 @@ function renderTournament(data) {
     
     addElements(layer3, elements);
     
-    newTournament.appendChild(layer3);
+    tournament.appendChild(layer3);
     
     // Create and add layer 3.5 of the tournament
     var layer3_5 = document.createElement("div");
@@ -198,7 +197,7 @@ function renderTournament(data) {
     
     addElements(layer3_5, elements);
     
-    newTournament.appendChild(layer3_5);
+    tournament.appendChild(layer3_5);
     
     // Create and add layer 4 of the tournament
     var layer4 = document.createElement("div");
@@ -216,13 +215,11 @@ function renderTournament(data) {
         
     addElements(layer4, elements);
         
-    newTournament.appendChild(layer4);
+    tournament.appendChild(layer4);
     
-    // Remove the old tournament, add in the new tournament
-    parentDiv = oldTournament.parentElement;
-    parentDiv.removeChild(oldTournament);
-    parentDiv.appendChild(newTournament);
-    
+    var bottom = document.getElementById("bottom");
+    tournament.removeChild(bottom);
+    tournament.appendChild(bottom);
 }
 
 function createCombiner(size) {
@@ -261,11 +258,6 @@ function createMatchTable(matchDetails, small) {
         match.classList.add("matchtable");
     }
     
-    if (!empty) {
-        player1name = normalizeName(player1name, small);
-        player2name = normalizeName(player2name, small);
-    }
-    
     // Add structure and information
     var player1 = match.insertRow(0);
     var player1namecell = player1.insertCell(0);
@@ -289,19 +281,10 @@ function createMatchTable(matchDetails, small) {
 
 function addMatchInnerValues(cell, content) {
     content = content || "";
-    cell.innerHTML = content;
-}
-
-function normalizeName(name, small) {
-    var max;
-    if (small) {
-        max = 6;
-    } else {
-        max = 13;
-    }
-    if (name.length > max) {
-        name = name.slice(0,max-2);
-        name += "...";
-    }
-    return name;
+    
+    var textbox = document.createElement("input");
+    textbox.type = "text";
+    textbox.name = "player1Name";
+    textbox.value = content;
+    cell.appendChild(textbox);
 }
