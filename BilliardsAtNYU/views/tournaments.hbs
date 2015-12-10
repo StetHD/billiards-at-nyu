@@ -12,7 +12,7 @@
     </form>
   {{/if}}
   <br>
-  Tournament: <select id='tournamentSelect' onChange='changeTournament();'>
+  Tournament: <select id='tournamentSelect'>
     {{#each tournaments}}
       {{#with this}}
         <option value='{{slug}}'>{{name}}</option>
@@ -26,7 +26,7 @@
   {{#if admin}}
   <br><br>
     <form action='/tournaments/edit' method='GET'>
-      <input type='hidden' name='tournamentName' id='editTourney'>
+      <input type='hidden' name='tournamentSlug' id='editTourney'>
       <input type='submit' value='Edit this tournament'>
     </form>
   {{/if}}

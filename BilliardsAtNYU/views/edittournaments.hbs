@@ -3,12 +3,11 @@
 
 <div class='contentdiv'>
   <h1>Tournaments</h1>
-  <form action='' method='POST' id='tournamentContainer' class='tournamentcontainer'>
-  Tournament: <input type='text' id='tournamentSlug' value='{{tournament}}'><br><br>
+  <form id='tournamentContainer' class='tournamentcontainer'>
+  Identifier: <input type='text' id='tournamentSlug' value='{{tournament}}'><br><br>
   <!--retrieved tournament goes here-->
   <div id='bottom'>
   <br><br>
-  <input type='hidden' id='hiddeninput' name='editingTournament' value='{{tournament}}'>
   <input type='submit' value='Submit'><input type='button' onclick='history.back();' value='Cancel'>
   </div>
   </form>

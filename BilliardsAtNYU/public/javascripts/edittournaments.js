@@ -5,12 +5,86 @@ var empty = false;
 window.onload = function() {
     active = true;
     
-    if (window.location.href.indexOf("edit") > -1) {
-        edit = true;
-    }
+    $('#tournamentContainer').bind('submit', submitTournament)
     
     // change tournament to most recent tournament
     changeTournament();
+}
+
+function submitTournament() {
+    
+    // Make the tournament object
+    var tournament = {};
+    
+    var tournamentForm = document.getElementById("tournamentContainer");
+    
+    for (var key in tournamentForm) {
+        if (!isNaN(parseInt(key))) {
+            if (tournamentForm[key].value === "") {
+                alert("All fields are required!");
+                return false;
+            }
+        }
+    }
+    
+    tournament.winner = tournamentForm.winner.value;
+    tournament.name = tournamentForm.name.value;
+    tournament.newSlug = document.getElementById("tournamentSlug").value;
+    // Start making rounds
+    tournament.rounds = [];
+    
+    /*
+    tournament.rounds[0] = {
+        roundOf: 2,
+        raceTo: tournamentForm.raceTo[0].value,
+        matches: [{
+            player1Name: tournamentForm.player1Name[0].value,
+            player2Name: tournamentForm.player2Name[0].value,
+            player1Score: tournamentForm.player1Score[0].value,
+            player2Score: tournamentForm.player2Score[0].value,
+            gameProgression: {}  //unimplemented
+        }]
+    }
+    */
+    
+    console.log(tournamentForm.player2Name)
+    
+    var matchLocationStart = 0;
+    for (round = 0; round < 4; round++) {
+        var matchesArray = [];
+        var pow = Math.pow(2, round);
+        matchLocationStart = pow-1;
+        for (i = 0; i < pow; i++) {
+            matchLocation = matchLocationStart+i;
+            matchesArray[i] = {
+                player1Name: tournamentForm.player1Name[matchLocation].value,
+                player2Name: tournamentForm.player2Name[matchLocation].value,
+                player1Score: tournamentForm.player1Score[matchLocation].value,
+                player2Score: tournamentForm.player2Score[matchLocation].value,
+                gameProgression: [] //unimplemented
+            }
+        }
+        
+        tournament.rounds[round] = {
+           roundOf: pow*2,
+           raceTo: tournamentForm.raceTo[round].value,
+           matches: matchesArray
+        }
+    }
+    
+    var form = document.createElement("form");
+    form.setAttribute("method", "POST");
+    form.setAttribute("action", "");
+    
+    tournamentJSON = JSON.stringify(tournament);
+    
+    console.log(tournamentJSON);
+    
+    $.post(window.location.href, {tournament: tournamentJSON} , function(result) {
+        window.location.href = result;
+    })
+    
+    return false;
 }
 
 function changeTournament() {
@@ -20,11 +94,6 @@ function changeTournament() {
     
     //get new value
     var newTournament = document.getElementById("tournamentSlug").value;
-    
-    var editHidden = document.getElementById("editTourney");
-    if (editHidden) {
-        editHidden.value = newTournament;
-    }
     
     $.getJSON("/tournaments/retrieve?slug=" + newTournament, renderTournament);
 }
@@ -36,7 +105,9 @@ function renderTournament(data) {
     /*
      *
      * var tournament = {
-     *   winner: String
+     *   name: String,
+     *   winner: String,
+     *   newSlug: String,
      *   rounds: [
      *   {
      *       roundOf: 2
@@ -110,6 +181,15 @@ function renderTournament(data) {
     var updatedTournament = data;
     
     var tournament = document.getElementById("tournamentContainer");
+    
+    tournament.innerHTML += "Tournament: "
+    var nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.name = "name";
+    nameInput.value = updatedTournament.name;
+    tournament.appendChild(nameInput);
+    tournament.appendChild(document.createElement("br"));
+    tournament.appendChild(document.createElement("br"));
     
     winner = document.createElement("div");
     winner.classList.add("winnerdiv");
@@ -217,6 +297,38 @@ function renderTournament(data) {
         
     tournament.appendChild(layer4);
     
+    var layer5 = document.createElement("div");
+    
+    var raceTo1 = document.createElement("input");
+    raceTo1.name = "raceTo";
+    raceTo1.type = "number";
+    raceTo1.setAttribute("value", updatedTournament.rounds[0].raceTo);
+    console.log(raceTo1.value);
+    var raceTo2 = document.createElement("input");
+    raceTo2.name = "raceTo";
+    raceTo2.type = "number";
+    raceTo2.setAttribute("value", updatedTournament.rounds[1].raceTo);
+    var raceTo3 = document.createElement("input");
+    raceTo3.name = "raceTo";
+    raceTo3.type = "number";
+    raceTo3.setAttribute("value", updatedTournament.rounds[2].raceTo);
+    var raceTo4 = document.createElement("input");
+    raceTo4.name = "raceTo";
+    raceTo4.type = "number";
+    raceTo4.setAttribute("value", updatedTournament.rounds[3].raceTo);
+    
+    layer5.innerHTML = "<br>Race To (Finals): ";
+    layer5.appendChild(raceTo1);
+    layer5.innerHTML += "<br>Race To (Semis): ";
+    layer5.appendChild(raceTo2);
+    layer5.innerHTML += "<br>Race To (Quarters): ";
+    layer5.appendChild(raceTo3);
+    layer5.innerHTML += "<br>Race To (Round of 16): ";
+    layer5.appendChild(raceTo4);
+
+    tournament.appendChild(layer5);
+    
+    // Move the bottom back to the bottom
     var bottom = document.getElementById("bottom");
     tournament.removeChild(bottom);
     tournament.appendChild(bottom);
@@ -262,29 +374,29 @@ function createMatchTable(matchDetails, small) {
     var player1 = match.insertRow(0);
     var player1namecell = player1.insertCell(0);
     player1namecell.classList.add("playernamecell");
-    addMatchInnerValues(player1namecell, player1name);
+    addMatchInnerValues(player1namecell, player1name, "player1Name", "text");
     
     var player1scorecell = player1.insertCell(1);
-    addMatchInnerValues(player1scorecell, player1score);
+    addMatchInnerValues(player1scorecell, player1score, "player1Score", "number");
     
     var player2 = match.insertRow(1);
     var player2namecell = player2.insertCell(0);
     player2namecell.classList.add("playernamecell");
-    addMatchInnerValues(player2namecell, player2name);
+    addMatchInnerValues(player2namecell, player2name, "player2Name", "text");
     
     var player2scorecell = player2.insertCell(1);
-    addMatchInnerValues(player2scorecell, player2score);
+    addMatchInnerValues(player2scorecell, player2score, "player2Score", "number");
     
     // return created match
     return match;
 }
 
-function addMatchInnerValues(cell, content) {
-    content = content || "";
+function addMatchInnerValues(cell, content, cellName, type) {
+    content = content || "0";
     
     var textbox = document.createElement("input");
-    textbox.type = "text";
-    textbox.name = "player1Name";
+    textbox.type = type;
+    textbox.name = cellName;
     textbox.value = content;
     cell.appendChild(textbox);
 }

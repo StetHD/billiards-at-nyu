@@ -51,7 +51,7 @@ router.get('/retrieve', function(req, res, next) {
     
     function makeFirstQuery() {
         db.cypher({
-            query: "MATCH (:Tournament {slug:{Slug}})<-[:WON]-(n) RETURN n",
+            query: "MATCH (m:Tournament {slug:{Slug}})<-[:WON]-(n) RETURN n,m",
             params: {
                 Slug: req.query.slug
             }
@@ -65,6 +65,7 @@ router.get('/retrieve', function(req, res, next) {
             return;
         }
         tournament.winner = results[0].n.properties.playername;
+        tournament.name = results[0].m.properties.name;
         db.cypher({
             query: "MATCH (:Tournament {slug:{Slug}})<-[r1:PART_OF {roundof: {Roundof}}]-(n:Match)<-[r2:PLAYED_IN]-(m:Player) RETURN n,m,r1,r2",
             params: {
@@ -121,8 +122,8 @@ router.get('/retrieve', function(req, res, next) {
     
     function finish(err) {
         if (err) throw err;
-        tournamentJSON = JSON.stringify(tournament, null, 3);
-        console.log(tournamentJSON);
+        //tournamentJSON = JSON.stringify(tournament, null, 3);
+        //console.log(tournamentJSON);
         console.log("tournament has been sent");
         res.json(tournament);
     }
@@ -136,11 +137,139 @@ router.get('/edit', function(req, res, next) {
     if (req.user) {
         if (req.user.isAdmin) {
             console.log("sending edittournaments");
-            helper.renderWithUser(req, res, 'edittournaments', {tournament: req.query.tournamentName});
+            helper.renderWithUser(req, res, 'edittournaments', {tournament: req.query.tournamentSlug});
             return;
         }
     }
     res.send("401 Unauthorized");
+});
+
+router.post('/edit', function(req, res, next) {
+  
+  var tournament = req.body.tournament;
+  
+  var oldSlug = req.query.tournamentSlug;
+  var newSlug;
+  
+  var currentRound;
+  var currentMatchIndex;
+  var currentMatchNumber;
+  var errors = [];
+  
+  if (req.user) {
+    if (req.user.isAdmin) {
+      
+      tournament = JSON.parse(tournament);
+      
+      console.log(tournament);
+      
+      newSlug = tournament.newSlug;
+      
+      var transaction = db.beginTransaction();
+      
+      makeFirstQuery();
+      return;
+    }
+  }
+  
+  res.send("401 Unauthorized");
+      
+  function makeFirstQuery() {
+    console.log("making first query");
+    transaction.cypher({
+      query: "MATCH (n:Tournament {slug: {Slug}})<-[r1]-(m)<-[r2]-(q) RETURN n,m,q",
+      params: {
+        Slug: oldSlug || "REPLACEMENT TEXT"
+      }
+    }, makeDeleteQuery);
+  }
+  
+  function makeDeleteQuery(err, results) {
+    console.log("making delete query");
+    console.log(oldSlug || "REPLACEMENT TEXT")
+    if (results[0]) {
+      transaction.cypher({
+        query: "MATCH (n:Tournament {slug: {Slug}})<-[r1:PART_OF]-(m)<-[r2:PLAYED_IN]-(q) DETACH DELETE n,m",
+        params: {
+          Slug: oldSlug || "REPLACEMENT TEXT"
+        }
+      }, makeCreateQuery)
+    } else {
+      console.log("didnt delete anything, moving on");
+      makeCreateQuery();
+    }
+  }
+  
+  function makeCreateQuery(err, results) {
+    console.log("making create query");
+    currentRound = tournament.rounds.length - 1;
+    currentMatchIndex = 0;
+    currentMatchNumber = 1;
+    transaction.cypher({
+      query: "CREATE (n:Tournament {slug: {Slug}, name: {Name}})",
+      params: {
+        Slug: newSlug,
+        Name: tournament.name
+      }
+    }, makeCreateWinnerQuery);
+  }
+  
+  function makeCreateWinnerQuery(err, results) {
+    console.log("making createWinner query")
+    console.log(tournament.winner);
+    transaction.cypher({
+      query: "MATCH (n:Tournament {slug: {Slug}}) MERGE (m:Player {playername: {WinnerName}}) CREATE (n)<-[:WON]-(m)",
+      params: {
+        Slug: newSlug,
+        WinnerName: tournament.winner
+      }
+    }, makeCreateMatchQuery)
+  }
+  
+  function makeCreateMatchQuery(err, results) {
+    if (err) {
+      errors.push(err);
+    }
+    console.log("making createMatch query");
+    if (currentRound == -1) {
+      finish();
+      return;
+    } else if (currentMatchIndex == tournament.rounds[currentRound].matches.length) {
+      currentMatchIndex = 0;
+      currentRound--;
+      makeCreateMatchQuery();
+      return;
+    }
+    
+    console.log("current round is " + currentRound);
+    console.log("current match index is " + currentMatchIndex);
+    console.log("current match number is " + currentMatchNumber);
+    console.log(tournament.rounds[currentRound].matches[currentMatchIndex]);
+    
+    helper.addMatch(newSlug,
+                    tournament.rounds[currentRound].raceTo,
+                    tournament.rounds[currentRound].roundOf,
+                    currentMatchNumber,
+                    tournament.rounds[currentRound].matches[currentMatchIndex],
+                    transaction,
+                    makeCreateMatchQuery);
+    
+    currentMatchIndex++;
+    currentMatchNumber++;
+  }
+  
+  function finish() {
+    if (errors[0]) throw errors[0];
+    
+    console.log("finished waiting!");
+    transaction.commit(done);
+  }
+  
+  function done(err) {
+    if (err) throw err;
+    console.log("committed");
+    res.send('/tournaments');
+  }
 });
 
 

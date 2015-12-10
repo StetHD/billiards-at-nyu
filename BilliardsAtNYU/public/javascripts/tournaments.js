@@ -9,6 +9,8 @@ window.onload = function() {
         edit = true;
     }
     
+    $('#tournamentSelect').bind('change', changeTournament);
+    
     // change tournament to most recent tournament
     changeTournament();
 }
@@ -38,7 +40,8 @@ function renderTournament(data) {
     /*
      *
      * var tournament = {
-     *   winner: String
+     *   name: String,
+     *   winner: String,
      *   rounds: [
      *   {
      *       roundOf: 2

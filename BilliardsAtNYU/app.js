@@ -105,6 +105,21 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+// Debug: login automatically as august sun (admin)
+app.use(function(req, res, next) {
+  db.cypher({
+    query: 'MATCH (user:User {username: {username}}) RETURN user',
+      params: {
+          username: "august"
+      }
+  }, function(err, results) {
+    results[0].user.isAdmin = true;
+    req.login(results[0].user, function(err) {
+      next(err);
+    });
+  });
+})
+
 app.use('/', routes);
 app.use('/users', users);
 app.use('/posts', posts);

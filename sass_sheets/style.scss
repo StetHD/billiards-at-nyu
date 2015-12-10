@@ -14,6 +14,13 @@ body {
     font: 11pt Verdana, Arial, Helvetica, sans-serif;
 }
 
+hr {
+    color: $foregroundtop-clr;
+    background-color: $foregroundtop-clr;
+    height: 1px;
+    border: 0 none;
+}
+
 div.centereddiv {
     margin:0 auto;
 }
@@ -160,7 +167,7 @@ table.matchtablesmall .playernamecell {
 }
 
 table.matchtable input {
-    width: 20px;
+    width: 25px;
 }
 
 table.matchtable td.playernamecell input {

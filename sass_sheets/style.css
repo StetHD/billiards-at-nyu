@@ -6,6 +6,12 @@ body {
   color: #CACCBE;
   font: 11pt Verdana, Arial, Helvetica, sans-serif; }
 
+hr {
+  color: #3A3A3A;
+  background-color: #3A3A3A;
+  height: 1px;
+  border: 0 none; }
+
 div.centereddiv, div.contentdiv, div.main, div.loginbox {
   margin: 0 auto; }
 
@@ -119,7 +125,7 @@ table.matchtablesmall .playernamecell {
   width: 65px; }
 
 table.matchtable input, table.matchtablesmall input {
-  width: 20px; }
+  width: 25px; }
 
 table.matchtable td.playernamecell input, table.matchtablesmall td.playernamecell input {
   width: 100%; }

@@ -49,26 +49,27 @@ helper.findPlayerForMatch = function(match, playernumber) {
   }
 }
 
-/*
-function addMatch() {
+
+helper.addMatch = function(tournamentSlug, raceTo, roundOf, matchNumber, match, transaction, callback) {
   // cypher query to add a match, with player 1, player 2 and attached to a specific tournament
-  db.cypher({
-    query: 'MATCH (a:Player {playername:{Player1Name}), (b:Player {playername: {Player2Name}),  (n:Tournament {semester: {TournamentName}})' +
-           'CREATE p =(a)-[:PLAYED_IN {playernumber: 1}]->(m:Match {raceto: {RaceTo}, player1score: {Player1Score}, player2score: {Player2Score}, games: {ProgressionOfGames}})<-[:PLAYED_IN {playernumber: 2}]-(b)' +
+  console.log("starting query");
+  transaction.cypher({
+    query: 'MATCH (n:Tournament {slug: {Slug}}) MERGE (a:Player {playername:{Player1Name}}) MERGE (b:Player {playername: {Player2Name}}) ' +
+           'CREATE p=(a)-[:PLAYED_IN {playernumber: 1}]->(m:Match {raceto: {RaceTo}, player1score: {Player1Score}, player2score: {Player2Score}, games: {ProgressionOfGames}})<-[:PLAYED_IN {playernumber: 2}]-(b) ' +
            'CREATE (m)-[:PART_OF {roundof: {RoundOf}, matchnumber: {MatchNumber}}]->(n)',
     params: {
-            Player1Name:
-            Player2Name:
-            TournamentName:
-            RaceTo:
-            Player1Score:
-            Player2Score:
-            ProgressionOfGames:
-            RoundOf:
-            MatchNumber:
+            Player1Name: match.player1Name,
+            Player2Name: match.player2Name,
+            Slug: tournamentSlug,
+            RaceTo: raceTo,
+            Player1Score: match.player1Score,
+            Player2Score: match.player2Score,
+            ProgressionOfGames: match.gameProgression || [],  //may not be implemented yet
+            RoundOf: roundOf,
+            MatchNumber: matchNumber
     }
-  })
+  }, callback)
 }
-*/
+
 
 module.exports = helper;
