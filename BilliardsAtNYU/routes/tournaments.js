@@ -32,7 +32,7 @@ router.get('/', function(req, res, next) {
       tournaments[index] = results[i].n.properties;
     }
     
-    console.log(tournaments);
+    //console.log(tournaments);
     
     data.tournaments = tournaments;
     
@@ -42,7 +42,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/retrieve', function(req, res, next) {
     
-    console.log(req.query);
+    //console.log(req.query);
     
     // setup tournament container
     var tournament = {};
@@ -63,7 +63,7 @@ router.get('/retrieve', function(req, res, next) {
     };
     
     function makeSecondQuery(err, results) {
-        console.log(results);
+        //console.log(results);
         if (!results[0]) {
             res.json("{}");
             return;
@@ -140,11 +140,11 @@ router.get('/edit', function(req, res, next) {
     var data = {}
     data.title = "Edit Tournament";
     
-    console.log(req.query);
+    //console.log(req.query);
     
     if (req.user) {
         if (req.user.isAdmin) {
-            console.log("sending edittournaments");
+            //console.log("sending edittournaments");
             data.tournament = req.query.tournamentSlug
             helper.renderWithUser(req, res, 'edittournaments', data);
             return;
@@ -154,6 +154,8 @@ router.get('/edit', function(req, res, next) {
 });
 
 router.post('/edit', function(req, res, next) {
+  
+  console.log("editing tournament");
   
   var tournament = req.body.tournament;
   
@@ -170,7 +172,7 @@ router.post('/edit', function(req, res, next) {
       
       tournament = JSON.parse(tournament);
       
-      console.log(tournament);
+      //console.log(tournament);
       
       newSlug = tournament.newSlug;
       
@@ -195,7 +197,6 @@ router.post('/edit', function(req, res, next) {
   
   function makeDeleteQuery(err, results) {
     console.log("making delete query");
-    console.log(oldSlug || "REPLACEMENT TEXT")
     if (results[0]) {
       transaction.cypher({
         query: "MATCH (n:Tournament {slug: {Slug}})<-[r1:PART_OF]-(m)<-[r2:PLAYED_IN]-(q) DETACH DELETE n,m",
@@ -225,7 +226,7 @@ router.post('/edit', function(req, res, next) {
   
   function makeCreateWinnerQuery(err, results) {
     console.log("making createWinner query")
-    console.log(tournament.winner);
+    //console.log(tournament.winner);
     transaction.cypher({
       query: "MATCH (n:Tournament {slug: {Slug}}) MERGE (m:Player {playername: {WinnerName}}) CREATE (n)<-[:WON]-(m)",
       params: {
@@ -250,10 +251,10 @@ router.post('/edit', function(req, res, next) {
       return;
     }
     
-    console.log("current round is " + currentRound);
-    console.log("current match index is " + currentMatchIndex);
-    console.log("current match number is " + currentMatchNumber);
-    console.log(tournament.rounds[currentRound].matches[currentMatchIndex]);
+    //console.log("current round is " + currentRound);
+    //console.log("current match index is " + currentMatchIndex);
+    //console.log("current match number is " + currentMatchNumber);
+    //console.log(tournament.rounds[currentRound].matches[currentMatchIndex]);
     
     helper.addMatch(newSlug,
                     tournament.rounds[currentRound].raceTo,
@@ -270,7 +271,7 @@ router.post('/edit', function(req, res, next) {
   function finish() {
     if (errors[0]) throw errors[0];
     
-    console.log("finished waiting!");
+    console.log("finished transaction!");
     transaction.commit(done);
   }
   

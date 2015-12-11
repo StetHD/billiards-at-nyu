@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
         nums: Nums
       }
     }, function(err, results) {
-      console.log(results);
+      //console.log(results);
       data.posts = [];
       
       for (i = postCount; i >= postCount-numberOfPosts+1; i--) {
@@ -71,7 +71,7 @@ router.get('/players', function(req, res, next) {
   
   if (req.query.playerName) {
     
-    console.log(req.query.playerName);
+    //console.log(req.query.playerName);
     
     db.cypher({
       query: "MATCH (n:Match)<-[r1:PLAYED_IN]-(m:Player {playername : {Playername}}) " +
@@ -102,7 +102,7 @@ router.get('/players', function(req, res, next) {
        */
       data.matches = helper.compileMatches(results);
       
-      console.log(data)
+      //console.log(data)
       
       helper.renderWithUser(req, res, 'players', data);
     });
@@ -150,7 +150,7 @@ router.post("/players", function(req, res, next) {
        */
       data.matches = helper.compileMatches(results);
       
-      console.log(data);
+      //console.log(data);
       
       res.json(data);
     });
@@ -202,7 +202,7 @@ router.post('/register', function(req, res, next) {
       // hash and salt
       var derivedKey = crypto.pbkdf2Sync(req.body.password, salt.toString(), 4096, 64);
       
-      console.log(derivedKey.toString('ascii'));
+      //console.log(derivedKey.toString('ascii'));
       
       db.cypher({
         query: "CREATE (n:User { username: {Username}, password: {Password}, salt: {Salt}})",
@@ -239,7 +239,7 @@ router.get('/dbquery', function(req, res, next) {
   var data = {};
   data.title = "DBQuery";
   if (req.user) {
-    console.log(req.user);
+    //console.log(req.user);
     if (req.user.isAdmin) {
       helper.renderWithUser(req, res, 'dbquery', data);
       return;
@@ -251,8 +251,7 @@ router.get('/dbquery', function(req, res, next) {
 router.post('/dbquery', function(req, res, next) {
   if (req.user) {
     if (req.user.isAdmin) {
-      console.log(req.body.query);
-      console.log(JSON.parse(req.body.params || "{}"));
+      //console.log(req.body.query);
       db.cypher({
         query: req.body.query,
         params: JSON.parse(req.body.params || "{}")

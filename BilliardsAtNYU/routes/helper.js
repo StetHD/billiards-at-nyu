@@ -4,7 +4,7 @@ helper.renderWithUser = function(req, res, route, data) {
   if (!data) {
     data = {};
   }
-  console.log("User: " + req.user);
+  //console.log("User: " + req.user);
   if (req.user) {
     data.user = req.user;
     if (data.user.labels.indexOf("Admin") != -1) {
@@ -17,7 +17,6 @@ helper.renderWithUser = function(req, res, route, data) {
 
 helper.tourneyNumber = function(tournament) {
   var number = helper.findYear(tournament);
-  console.log(tournament.slug.slice(0,4));
   if (tournament.slug.slice(0,4) === "fall") {
     number += "2";
   } else {
@@ -52,7 +51,7 @@ helper.findPlayerForMatch = function(match, playernumber) {
 
 helper.addMatch = function(tournamentSlug, raceTo, roundOf, matchNumber, match, transaction, callback) {
   // cypher query to add a match, with player 1, player 2 and attached to a specific tournament
-  console.log("starting query");
+  console.log("starting add match query");
   transaction.cypher({
     query: 'MATCH (n:Tournament {slug: {Slug}}) MERGE (a:Player {playername:{Player1Name}}) MERGE (b:Player {playername: {Player2Name}}) ' +
            'CREATE p=(a)-[:PLAYED_IN {playernumber: 1}]->(m:Match {raceto: {RaceTo}, player1score: {Player1Score}, player2score: {Player2Score}, games: {ProgressionOfGames}})<-[:PLAYED_IN {playernumber: 2}]-(b) ' +

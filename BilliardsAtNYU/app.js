@@ -90,7 +90,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(id, done) {
   console.log("deserializing user");
   console.log("ID IS " + id);
-  console.log(typeof id);
   db.cypher({
     query: "MATCH (n:User {username:{Username}}) RETURN n",
     params: {

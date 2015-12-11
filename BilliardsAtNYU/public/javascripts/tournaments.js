@@ -21,8 +21,6 @@ function changeTournament() {
     }
     
     //get new value
-    console.log(document.getElementById("tournamentSelect").value);
-    console.log(document.getElementById("tournamentSelect").innerHTML);
     var newTournament = document.getElementById("tournamentSelect").value;
     
     var editHidden = document.getElementById("editTourney");
@@ -110,7 +108,7 @@ function renderTournament(data) {
         empty = false;
     }
     
-    console.log(data);
+    //console.log(data);
     
     var updatedTournament = data;
     

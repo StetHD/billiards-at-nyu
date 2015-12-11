@@ -47,7 +47,7 @@ function submitTournament() {
     }
     */
     
-    console.log(tournamentForm.player2Name)
+    //console.log(tournamentForm.player2Name)
     
     var matchLocationStart = 0;
     for (round = 0; round < 4; round++) {
@@ -78,7 +78,7 @@ function submitTournament() {
     
     tournamentJSON = JSON.stringify(tournament);
     
-    console.log(tournamentJSON);
+    //console.log(tournamentJSON);
     
     $.post(window.location.href, {tournament: tournamentJSON} , function(result) {
         window.location.href = result;
@@ -176,7 +176,7 @@ function renderTournament(data) {
         empty = false;
     }
     
-    console.log(data);
+    //console.log(data);
     
     var updatedTournament = data;
     
@@ -303,7 +303,6 @@ function renderTournament(data) {
     raceTo1.name = "raceTo";
     raceTo1.type = "number";
     raceTo1.setAttribute("value", updatedTournament.rounds[0].raceTo);
-    console.log(raceTo1.value);
     var raceTo2 = document.createElement("input");
     raceTo2.name = "raceTo";
     raceTo2.type = "number";
