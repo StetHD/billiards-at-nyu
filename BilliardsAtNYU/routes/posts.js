@@ -4,9 +4,11 @@ var db = require('../db.js');
 var helper = require('./helper.js');
 
 router.get('/new', function(req, res, next) {
+  var data = {};
+  data.title = "New Post";
   if (req.user) {
     if (req.user.isAdmin) {
-      helper.renderWithUser(req, res, 'newpost');
+      helper.renderWithUser(req, res, 'newpost', data);
       return;
     }
   }

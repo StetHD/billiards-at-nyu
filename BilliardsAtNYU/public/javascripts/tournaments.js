@@ -222,9 +222,9 @@ function renderTournament(data) {
     newTournament.appendChild(layer4);
     
     // Remove the old tournament, add in the new tournament
-    parentDiv = oldTournament.parentElement;
-    parentDiv.removeChild(oldTournament);
-    parentDiv.appendChild(newTournament);
+    var parent = oldTournament.parentElement;
+    parent.removeChild(oldTournament);
+    parent.appendChild(newTournament);
     
 }
 

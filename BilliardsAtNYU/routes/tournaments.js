@@ -4,6 +4,8 @@ var db = require('../db.js');
 var helper = require('./helper.js');
 
 router.get('/', function(req, res, next) {
+  var data = {};
+  data.title = "Tournaments";
   db.cypher({
     query: "MATCH (n:Tournament) RETURN n"
   }, function(err, results) {
@@ -32,7 +34,9 @@ router.get('/', function(req, res, next) {
     
     console.log(tournaments);
     
-    helper.renderWithUser(req, res, 'tournaments', {"tournaments": tournaments});
+    data.tournaments = tournaments;
+    
+    helper.renderWithUser(req, res, 'tournaments', data);
   })
 });
 
@@ -132,12 +136,17 @@ router.get('/retrieve', function(req, res, next) {
 });
 
 router.get('/edit', function(req, res, next) {
+  
+    var data = {}
+    data.title = "Edit Tournament";
+    
     console.log(req.query);
     
     if (req.user) {
         if (req.user.isAdmin) {
             console.log("sending edittournaments");
-            helper.renderWithUser(req, res, 'edittournaments', {tournament: req.query.tournamentSlug});
+            data.tournament = req.query.tournamentSlug
+            helper.renderWithUser(req, res, 'edittournaments', data);
             return;
         }
     }

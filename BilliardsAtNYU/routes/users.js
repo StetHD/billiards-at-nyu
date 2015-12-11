@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:username', function(req, res, next) {
-  res.send(req.user.properties.username);
+  res.send("Under construction!");
 })
 
 module.exports = router;

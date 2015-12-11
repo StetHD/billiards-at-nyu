@@ -24,45 +24,6 @@ Sample Documents
 ----------------------
 
 ```javascript
-// Schema to hold user logins and profiles
-// Currently just used for authentication and identification purposes
-// May be used in the future to also store extra profile information
-// which can be displayed in profile pages
-User: {"username":String, // username provided by plugin
-       "password":String, // password provided by plugin
-       // Possibly more profile details to be implemented?
-       "admin":Boolean,
-       "email":String,
-       "playerid":String} // Relational reference to players database
-
-// Schema to hold player information
-// Name
-// Rank, calculated and recorded rank
-// Tournaments taken part in, recorded tournament history
-Player: {"playerName":String,
-	 "playerRank":Number,
-	 "partTourneys":[String]} // Relational reference to tournaments
-					//database
-
-// Schema to hold past (and current?) tournament details
-// Can use relational references to this to figure out where someone
-// placed in a tournament, may need this to calculate player stats in the
-// future
-// Also for past tournament viewing
-Tournament: { // Still need to figure this out :/
-	     }
-
-// Schema to hold news and announcements posts
-// Records title, content, slug for reference
-// May need to also implement a way for administrators to input into
-// this database in a user friendly way
-Post: {"postid":Number,
-       "title":String,
-       "content":String,
-       "slug":String}
-```
-
-```javascript
 // Node schemas to softly implement
 // Node structure
 // (n:MainLabel[:OptionalLabels] {
@@ -127,7 +88,18 @@ and log in and use that profile as an identity. The most important part of
 this module would probably be security issues; the storage of the identity
 also needs to be worked out properly.
 
-Possible modules: Passport?
+Modules: Passport, Crypto
+
+- User Authorization (1 Point)
+
+User Authorization, allowing for only certain users with certain labels attached
+to their account to access certain pages; for example, only allowing administrators
+to make new posts on the homepage or to edit the tournament contents. Restricting
+access to these pages is important to control the quality of the content of
+the webpage. I will be implementing this myself with the help of the Passport
+req.user object.
+
+Modules: Express Session
 
 - CSS Preprocessor (1 Point)
 
@@ -135,7 +107,9 @@ A CSS preprocessor allows me to write in more concise and interactive CSS
 code, converting it into proper CSS after finishing and before serving to
 the client. This will make for a more organized and easier to manage stylesheet,
 which should simplify building the CSS framework for the site. I will likely
-be using Sass for this, as it has a pretty simple and well documented API.
+be using SASS for this, as it has a pretty simple and well documented API.
+
+Preprocessor: SASS
 
 - Relational Database - neo4j (3 points - possibly 4 for complexity?)
 
@@ -147,16 +121,12 @@ not directly supported by mongo and storing documents does not allow for
 circular references. Therefore, I will be looking to work with a graph
 database, neo4j, using the cypher query language and the Node-Neo4j module.
 
-- In page server-client communication (tbd with research)
+This is arguably 4 points or more, as it entails learning to use an entirely
+new database that functions under a different concept, learning to utilize a
+query language similar to SQL, as well as a new driver that connects express and
+the database.
 
-Trying to communicate between server and client without requiring the usage
-of GET and POST methods, i.e. interactive communication with server fully
-integrated into page; this may be ambitious, depending on the turnout of
-research. Possible things to consider would be how long to keep connections
-open, how resource intensive that would be on the server/clients, the thread-
-safety of such techniques. This would provide for a much more immersive
-experience for users, and allow for intuitive interaction with mainly the
-tournament management features aimed at tourney players.
+Modules: Node-Neo4j v2
 
 Authorization
 ---------------------------
@@ -172,8 +142,20 @@ Guests can access:
 - Home
 - About
 - Tournament
+- Players-Lookup
 - Login
 - Register
+
+Players can access:
+
+- Personal Profile Page
+- Record Match
+
+Admins can access:
+
+- Home-New Posts
+- Tournament-New-Edit
+- DBquery
 
 Site Map
 ---------------------------
@@ -186,3 +168,10 @@ Wireframes
 
 ![Wireframes 1](/documentation/Wireframes1.png?raw=true)
 ![Wireframes 2](/documentation/Wireframes2.png?raw=true)
+
+
+Debug Purpose ONLY Pages
+--------------------------
+
+/testing - Page displays the current req.user object
+/makeadmin - Makes the current user into an administrator

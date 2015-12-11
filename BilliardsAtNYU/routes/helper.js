@@ -71,5 +71,46 @@ helper.addMatch = function(tournamentSlug, raceTo, roundOf, matchNumber, match, 
   }, callback)
 }
 
+helper.compileMatches = function(results) {
+  
+  matches = [];
+  for (i = 0; i < results.length; i++) {
+   
+    var match = {
+      id: results[i]["id(n)"],
+      date: results[i].n.properties.date,
+      opponent: results[i].q.properties.playername,
+      playerNumber: results[i].r1.properties.playernumber,
+      gameProgression: results[i].n.properties.games,
+      isTournamentMatch: false
+    }
+        
+    if (match.playerNumber == 1) {
+      match.playerScore = results[i].n.properties.player1score;
+      match.opponentScore = results[i].n.properties.player2score;
+    } else {
+      match.playerScore = results[i].n.properties.player2score;
+      match.opponentScore = results[i].n.properties.player1score;
+    }
+        
+    if (results[i].r2 != null) {
+      match.isTournamentMatch = true;
+      match.roundOf = results[i].r2.properties.roundof;
+      match.tournamentName = results[i].t.properties.name;
+    }
+        
+    index = matches.length;
+    for (j = matches.length; j > 0; j--) {
+      if (match.id > matches[j-1].id) {
+        index = j-1;
+      }
+    }
+        
+    matches.splice(index, 0, match);
+  }
+  
+  return matches;
+}
+
 
 module.exports = helper;

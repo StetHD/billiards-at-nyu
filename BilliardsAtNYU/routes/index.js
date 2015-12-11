@@ -8,6 +8,10 @@ var helper = require('./helper.js');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   
+  var data = {};
+  
+  data.title = "Billiards@NYU";
+  
   // get most recent posts from database
   db.cypher({
     query: "MATCH (n:PostCount) RETURN n"
@@ -15,17 +19,25 @@ router.get('/', function(req, res, next) {
     
     postCount = results[0].n.properties.count || 0;
     
+    var numberOfPosts = 5;
+    
+    var Nums = []
+    
+    for (i = 0; i < numberOfPosts; i++) {
+      Nums.push(postCount-i);
+    }
+    
     db.cypher({
       query: "MATCH (n:Post) WHERE n.postnumber IN { nums } RETURN n",
       params: {
-        nums: [postCount, postCount-1, postCount-2]
+        nums: Nums
       }
     }, function(err, results) {
       console.log(results);
-      var data = {posts: []};
+      data.posts = [];
       
-      for (i = postCount; i >= postCount-2; i--) {
-        for (j = 0; j < 3; j++) {
+      for (i = postCount; i >= postCount-numberOfPosts+1; i--) {
+        for (j = 0; j < numberOfPosts; j++) {
           if (results[j]) {  
             if (results[j].n.properties.postnumber == i) {
               data.posts[postCount-i] = results[j].n.properties;
@@ -47,15 +59,107 @@ router.get('/home', function (req, res, next) {
 });
 
 router.get('/about', function(req, res, next) {
-  helper.renderWithUser(req, res, 'about');
+  var data = {};
+  data.title = "About"
+  helper.renderWithUser(req, res, 'about', data);
 });
 
 router.get('/players', function(req, res, next) {
-  helper.renderWithUser(req, res, 'players');
+  
+  var data = {};
+  data.title = "Players";
+  
+  if (req.query.playerName) {
+    
+    console.log(req.query.playerName);
+    
+    db.cypher({
+      query: "MATCH (n:Match)<-[r1:PLAYED_IN]-(m:Player {playername : {Playername}}) " +
+             "MATCH (n)<-[:PLAYED_IN]-(q) WHERE NOT q.playername = {Playername} " +
+             "OPTIONAL MATCH  (t:Tournament)<-[r2:PART_OF]-(n) " +
+             "RETURN n, id(n), r1, m, q, t, r2",
+      params: {
+        Playername: req.query.playerName
+      }
+    }, function(err, results) {
+      data.playerName = req.query.playerName;
+      
+      /*
+       * Match form:
+       * match = [{
+        id: Number,
+        date: Date,
+        opponent: String,
+        playerScore: Number,
+        playerNumber: Number,
+        opponentScore: Number,
+        gameProgression: [Number],
+        isTournamentMatch: Boolean, (if true, then the rest)
+        tournamentName: String,
+        roundOf: Number
+       }]
+       *
+       */
+      data.matches = helper.compileMatches(results);
+      
+      console.log(data)
+      
+      helper.renderWithUser(req, res, 'players', data);
+    });
+  } else {
+    helper.renderWithUser(req, res, 'players', data);
+  }
+});
+
+router.post("/players", function(req, res, next) {
+  
+    db.cypher({
+      query: "MATCH (n:Match)<-[r1:PLAYED_IN]-(m:Player {playername : {Playername}}) " +
+             "MATCH (n)<-[:PLAYED_IN]-(q) WHERE NOT q.playername = {Playername} " +
+             "OPTIONAL MATCH  (t:Tournament)<-[r2:PART_OF]-(n) " +
+             "RETURN n, id(n), r1, m, q, t, r2",
+      params: {
+        Playername: req.body.playerName
+      }
+    }, function(err, results) {
+      
+      if (!results[0]) {
+        res.json({});
+        return;
+      }
+      
+      var data = {}
+      
+      data.playerName = req.body.playerName;
+      
+      /*
+       * Match form:
+       * match = [{
+        id: Number,
+        date: Date,
+        opponent: String,
+        playerScore: Number,
+        playerNumber: Number,
+        opponentScore: Number,
+        gameProgression: [Number],
+        isTournamentMatch: Boolean, (if true, then the rest)
+        tournamentName: String,
+        roundOf: Number
+       }]
+       *
+       */
+      data.matches = helper.compileMatches(results);
+      
+      console.log(data);
+      
+      res.json(data);
+    });
 });
 
 router.get('/contact', function(req, res, next) {
-  helper.renderWithUser(req, res, 'contact');
+  var data = {};
+  data.title = "Contact Us";
+  helper.renderWithUser(req, res, 'contact', data);
 });
 
 router.post('/contact', function(req, res, next) {
@@ -63,18 +167,22 @@ router.post('/contact', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-  helper.renderWithUser(req, res, 'login');
+  var data = {};
+  data.title = "Login";
+  helper.renderWithUser(req, res, 'login', data);
 });
 
 router.post('/login',
-            passport.authenticate('local', { successRedirect: '/testing',
+            passport.authenticate('local', { successRedirect: '/',
                                              failureRedirect: '/login'}));
 
 router.get('/register', function(req, res, next) {
   if (req.user) {
     res.redirect('/users');
   } else {
-    helper.renderWithUser(req, res, 'register');
+    var data = {}
+    data.title = "Register";
+    helper.renderWithUser(req, res, 'register', data);
   }
 });
 
@@ -113,8 +221,10 @@ router.post('/register', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next) {
+  var data = {};
+  data.title = "Logout";
   req.logout();
-  helper.renderWithUser(req, res, 'logout');
+  helper.renderWithUser(req, res, 'logout', data);
 });
 
 router.get('/testing', function(req, res, next) {
@@ -126,10 +236,12 @@ router.get('/testing', function(req, res, next) {
 })
 
 router.get('/dbquery', function(req, res, next) {
+  var data = {};
+  data.title = "DBQuery";
   if (req.user) {
     console.log(req.user);
     if (req.user.isAdmin) {
-      helper.renderWithUser(req, res, 'dbquery');
+      helper.renderWithUser(req, res, 'dbquery', data);
       return;
     }
   }

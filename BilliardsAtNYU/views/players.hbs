@@ -1,5 +1,40 @@
+<script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js'></script>
+<script type='text/javascript' src='/javascripts/players.js'></script>
+
 <div class="contentdiv">
 
-placeholder
+    <h1>Players</h1>
+    <p>Use this page to lookup players recent matches and their current stats. Enter a player name in the field below and press Submit to find their stats.</p>
+    
+    <br>
+    <form id="playerQuery">
+    Player Name: <input type="text" name="playerName" value="{{playerName}}"> <input type="submit" value="Submit">
+    </form>
+    <br>
+    <br>
+    
+    <div id="playerContainer">
+        
+        {{#if playerName}}
+            <div class="playerstats"><h3>{{playerName}}</h3><p>Player Rank: {{playerRank}}</p></div>
+            <div class="playermatches"><div class="inner">
+            <h3>Recent Matches</h3>
+            {{#each matches}}
+                {{#with this}}
+                <hr class="lightcolor">
+                Against: {{opponent}} <br>
+                Score: ({{playerScore}} - {{opponentScore}}) (Player - Opponent) <br>
+                Date: {{date}} <br>
+                {{#if isTournamentMatch}}
+                    (Tournament Match) <br>
+                    Tournament: {{tournamentName}} <br>
+                    Round Of: {{roundOf}} <br>
+                {{/if}}
+                {{/with}}
+            {{/each}}
+            </div></div>
+        {{/if}}
+        
+    </div>
 
 </div>
