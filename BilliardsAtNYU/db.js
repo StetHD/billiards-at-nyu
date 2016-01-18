@@ -21,7 +21,7 @@ mongoose.connect("mongodb://localhost/BilliardsAtNYU");
 module.exports = ModelUser;*/
 
 var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase('http://neo4j:admin@localhost:10561');
+var db = new neo4j.GraphDatabase('http://neo4j:admin@localhost:7474');
 
 /* DB EXAMPLE
 db.cypher({
