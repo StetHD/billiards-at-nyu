@@ -40,6 +40,37 @@ router.get('/', function(req, res, next) {
   })
 });
 
+router.get('/signup', function(req, res, next) {
+    var data = {};
+    data.title = "Signup"
+    helper.renderWithUser(req, res, 'signup', data);
+});
+
+router.post('/signup', function(req, res, next) {
+    
+    tournament = "spring-2016";
+    
+    console.log(req.body);
+    
+    db.cypher({
+      query: "CREATE (n:Signup {tournament:{Tournament}, name:{Name}, phone:{Phone}, email:{Email}, skill:{Skill}, comment:{Comment}}) RETURN (n)",
+      params: {
+        Tournament: tournament,
+        Name: req.body.name,
+        Phone: req.body.phone,
+        Email: req.body.email,
+        Skill: req.body.skill,
+        Comment: req.body.comment
+      }
+    }, function(err, results) {
+      var data = {};
+      console.log(results);
+      data.title = "Signup";
+      data.name = results[0].n.properties.name;
+      helper.renderWithUser(req, res, 'signupconfirm', data);
+    })
+});
+
 router.get('/retrieve', function(req, res, next) {
     
     //console.log(req.query);
